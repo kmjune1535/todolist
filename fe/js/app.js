@@ -1,9 +1,6 @@
 (function (window) {
-	'use strict';
 
-	// Your starting point. Enjoy the ride!
-
-
+	//Load List
 	$.ajax({
 		type: 'GET',
         url: '/api/todos',
@@ -29,10 +26,11 @@
         	$('.todo-count').children().first().append(size);
         },
         error: function(err){
-        	alert('실패');
+        	alert('데이터 로드에 실패하였습니다.');
         }	
 	});
 	
+	//Insert Data
 	$('.new-todo').keypress(function(e) { 
 		if (e.keyCode == 13){
 	        var todo = $('.new-todo').val().trim();
@@ -42,8 +40,8 @@
 	        	return;
 	        }
 
-	        var obj = new Object(); // JSON형식으로 변환 할 오브젝트
-	        obj.todo = todo; // input의 값을 오브젝트에 저장
+	        var obj = new Object();
+	        obj.todo = todo; 
 	         
 	        var json_data = JSON.stringify(obj);
 
@@ -66,23 +64,25 @@
 											+'</li>');
 	            	$('.new-todo').val('');
 	            	
+	            	//List Size
 	            	var size = $('.todo-count').children().first();
-	            	//문자열 추가??
 	            	size.text(Number(size.text())+1);
 	            },
 	            error: function(err){
-	            	alert('실패');
+	            	alert('데이터 입력에 실패하였습니다.');
 	            }		            
 	        });
 	    }   
 	});
 	
+	//Update CheckBox
 	$(document).on('click', '.toggle', function(e){ 
 		var checkbox = $(this);
 		var id = $(this).parent().attr('id');
 		var completed = $(this).parent().parent(); 
 		var size = $('.todo-count').children().first();
 		var notChecked = $(this).prop('checked');
+		
 		if(notChecked){
 			$.ajax({
 				type: 'PUT',
@@ -94,13 +94,13 @@
 						checkbox.attr('disabled',true);
 						completed.attr('class', 'completed');
 						size.text(size.text()-1);
-					}
+					} else alert('데이터 편집에 실패하였습니다.');
 				}
-	
 			});
 		}
 	});
 	
+	//Delete Data
 	$(document).on('click', '.destroy', function() { 
 		var id = $(this).parent().attr('id');
 		var deleted = $(this).parent().parent();
@@ -111,13 +111,15 @@
 			type: 'DELETE',
 			url: '/api/todos/'+ id,
 			success: function(result){
-				//result===true 체크
-				deleted.remove();
-				if(!checked) size.text(size.text()-1);
+				if(result) {
+					deleted.remove();
+					if(!checked) size.text(size.text()-1);
+				} else alert('데이터 삭제에 실패하였습니다.');
 			}
 		});
 	});
 	
+	//Change Filters
 	$(document).on('click', '.filters li', function() { 
 		var aTag = $(this).children().first();
 		$('.selected').removeAttr('class');
@@ -140,17 +142,22 @@
 		}
 	});
 	
+	//Delete Completed
 	$(document).on('click', '.clear-completed', function() {
 		$.ajax({
 			type: 'DELETE',
 			url: '/api/todos/',
 			success: function(result){
-				$('.todo-list li').each(function() { 
-					if($(this).attr('class')==='completed') $(this).remove();
-				});
+				if(result) {
+					$('.todo-list li').each(function() { 
+						if($(this).attr('class')==='completed') $(this).remove();
+					});
+				} else alert('데이터 삭제에 실패하였습니다.');
 			}
 		});
 	});
+	
+	//Edit Data
 	$(document).on('dblclick', '.todo-list li', function() {
 		var $this = $(this);
 		var checked = $this.children().first().children().eq(0).prop('checked');
@@ -165,9 +172,9 @@
 			$this.attr('class', 'editing');
 			
 			$(edit).keypress(function(e) { 
-				e.preventDefault();
 				if (e.keyCode == 13){
-			        var todo = $(edit).val();
+					e.preventDefault();
+			        var todo = $(edit).val().trim();
 			        if(todo==='') {
 			        	alert('문자를 입력하세요'); 	
 			        	return;
@@ -190,10 +197,10 @@
 			            	if(responseData) {
 			            		label.text(edit.val());
 			            		$this.removeClass('editing');
-			            	}
+			            	} else alert('데이터 편집에 실패하였습니다.');
 			            },
 			            error: function(err){
-			            	alert('실패했습니다.');
+			            	alert('데이터 편집에 실패하였습니다.');
 			            }		            
 			        });
 			    }   

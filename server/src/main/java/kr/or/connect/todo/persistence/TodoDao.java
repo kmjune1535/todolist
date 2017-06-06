@@ -1,13 +1,11 @@
 package kr.or.connect.todo.persistence;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.assertj.core.util.Maps;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -30,8 +28,7 @@ public class TodoDao {
 				.withTableName("todo")
 				.usingGeneratedKeyColumns("id");
 	}
-	
-	//InsertTodo
+
 	public Integer insert(Todo todo) {
 		SqlParameterSource params = new BeanPropertySqlParameterSource(todo);
 		return insertAction.executeAndReturnKey(params).intValue();
@@ -58,10 +55,7 @@ public class TodoDao {
 	}
 	
 	public int update(Todo todo) {
-		Map<String, Object> todoMap = new HashMap<>();
-		todoMap.put("id", todo.getId());
-		todoMap.put("todo", todo.getTodo());
-		return jdbc.update(TodoSqls.UPDATE, todoMap);
+		return jdbc.update(TodoSqls.UPDATE, new BeanPropertySqlParameterSource(todo));
 	}
 	
 

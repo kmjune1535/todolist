@@ -1,6 +1,5 @@
 package kr.or.connect.todo.api;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ public class TodoController {
 	private final Logger log = LoggerFactory.getLogger(TodoController.class);
 	
 	@Autowired
-	public TodoController(TodoService service){
+	public TodoController(TodoService service) {
 		this.service = service;
 	}
 	

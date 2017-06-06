@@ -63,10 +63,10 @@ public class TodoControllerTest {
 	@Test
 	public void shouldUpdate() throws Exception {
 		mvc.perform(
-			put("/api/todos/completed/100")
+			put("/api/todos/100/completed")
 				.contentType(MediaType.APPLICATION_JSON)
 			)
-			.andExpect(status().isNoContent());
+			.andExpect(status().isOk());
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class TodoControllerTest {
 			delete("/api/todos/99")
 				.contentType(MediaType.APPLICATION_JSON)
 		)
-		.andExpect(status().isNoContent());
+		.andExpect(status().isOk());
 	}
 	
 	@Test
@@ -84,6 +84,6 @@ public class TodoControllerTest {
 			delete("/api/todos/")
 				.contentType(MediaType.APPLICATION_JSON)
 		)
-		.andExpect(status().isNoContent());
+		.andExpect(status().isOk());
 	}
 }
